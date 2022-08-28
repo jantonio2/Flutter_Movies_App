@@ -11,10 +11,12 @@ class MoviesProvider extends ChangeNotifier{
   final String _apiKey = dotenv.env['TMDB_API_KEY'] ?? 'Una ApiKey válida';
   final String _language = 'es-ES';
 
+  List<Movie> onDisplayMovies = [];
+
   MoviesProvider() {
     print('MoviesProvider inicializado');
 
-    this.getOnDisplayMovies();
+    getOnDisplayMovies();
   }
 
   getOnDisplayMovies() async{
@@ -27,6 +29,8 @@ class MoviesProvider extends ChangeNotifier{
     final response = await http.get(url);
     final nowPlayingResponse = NowPlayingResponse.fromJson(response.body);
     // final Map<String, dynamic> decodedData = json.decode(response.body);
-    print( nowPlayingResponse.results[1].title );
+    onDisplayMovies = nowPlayingResponse.results;
+
+    notifyListeners();
   }
 }
