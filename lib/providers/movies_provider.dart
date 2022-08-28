@@ -1,7 +1,12 @@
-
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 
 class MoviesProvider extends ChangeNotifier{
+
+  String _baseUrl = '';
+  String _apiKey = 'api.themoviedb.org';
+  String _language = 'es-ES';
+
   MoviesProvider() {
     print('MoviesProvider inicializado');
 
@@ -9,6 +14,6 @@ class MoviesProvider extends ChangeNotifier{
   }
 
   getOnDisplayMovies() async{
-    print('getOnDisplayMovies');
+    var url = Uri.https('', '');
   }
 }
