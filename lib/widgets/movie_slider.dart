@@ -21,6 +21,7 @@ class MovieSlider extends StatefulWidget {
 class _MovieSliderState extends State<MovieSlider> {
 
   final ScrollController scrollController = ScrollController();
+  bool isLoading = false;
 
   @override
   void initState() {
@@ -29,10 +30,31 @@ class _MovieSliderState extends State<MovieSlider> {
     scrollController.addListener(() {
 
       if( scrollController.position.pixels >= scrollController.position.maxScrollExtent - 500){
-        widget.onNextPage();
+        fetchData();
       }
     });
 
+  }
+
+  Future fetchData() async{
+    if(isLoading) return;
+
+    isLoading = true;
+    setState(() {});
+
+    await Future.delayed(const Duration(seconds: 2));
+
+    widget.onNextPage();
+
+    isLoading = false;
+    setState(() {});
+
+    // if( scrollController.position.pixels + 100 <= scrollController.position.maxScrollExtent ) return;
+    // scrollController.animateTo(
+    //   scrollController.position.pixels + 120,
+    //   duration: const Duration(milliseconds: 300),
+    //   curve: Curves.fastOutSlowIn
+    // );
   }
 
   @override
@@ -69,13 +91,23 @@ class _MovieSliderState extends State<MovieSlider> {
             )
           else
             Expanded(
-              child: ListView.builder(
-                controller: scrollController,
-                scrollDirection: Axis.horizontal,
-                itemCount: widget.movies.length,
-                itemBuilder: ( _, int index ) => _MoviePoster( movie: widget.movies[index] ),
+              child: Stack(
+                children: [
+                  ListView.builder(
+                    controller: scrollController,
+                    scrollDirection: Axis.horizontal,
+                    itemCount: widget.movies.length,
+                    itemBuilder: ( _, int index ) => _MoviePoster( movie: widget.movies[index] ),
+                  ),
+                  if(isLoading)
+                    const Positioned(
+                      bottom: 260 * 0.5 - 30,
+                      right: 10,
+                      child: _LoadingIcon()
+                    )
+                ],
               ),
-            )
+            ),
         ],
       ),
     );
@@ -121,6 +153,26 @@ class _MoviePoster extends StatelessWidget {
           )
         ],
       ),
+    );
+  }
+}
+
+class _LoadingIcon extends StatelessWidget {
+  const _LoadingIcon({
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.all(10),
+      height: 60,
+      width: 60,
+      decoration: BoxDecoration(
+          color: Colors.white.withOpacity(0.6),
+          shape: BoxShape.circle
+      ),
+      child: const CircularProgressIndicator( color: Colors.indigo),
     );
   }
 }
