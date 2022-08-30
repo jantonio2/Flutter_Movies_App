@@ -49,8 +49,8 @@ class MovieSearchDelegate extends SearchDelegate {
 
     final moviesProvider = Provider.of<MoviesProvider>(context, listen: false);
 
-    return FutureBuilder(
-      future: moviesProvider.searchMovies(query),
+    return StreamBuilder(
+      stream: moviesProvider.suggestionStream,
       builder: ( _, AsyncSnapshot<List<Movie>> snapshot) {
         if(!snapshot.hasData) return _emptyWidget();
 
@@ -91,8 +91,8 @@ class _MovieItem extends StatelessWidget {
           fit: BoxFit.cover,
         ),
       ),
-      title: Expanded(child: Text(movie.title)),
-      subtitle: Expanded(child: Text(movie.originalTitle)),
+      title: Text(movie.title),
+      subtitle: Text(movie.originalTitle),
       onTap: () {
         Navigator.pushNamed(context, 'details', arguments: movie);
       },
